@@ -1,3 +1,8 @@
+output "vpc_id" {
+    value = module.vpc.vpc_id
+    description = "VPC ID"
+}
+
 output "public_subnets" {
   value       = module.vpc.public_subnets
   description = "Public Subnet Ids for the Load Balancer"
