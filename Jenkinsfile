@@ -10,7 +10,7 @@ pipeline {
         
         stage("Build Image") {
             steps {
-                ls -alh
+                sh "ls -alh"
             }
         }
 
