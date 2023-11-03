@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging-deployment
+  namespace: messaging-app
+  labels:
+    app: app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: nginx:latest  # Use the Nginx image of your choice
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /  # Adjust the path to your application
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /  # Adjust the path to your application
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      - name: fluentd
+        image: fluentd:latest  # Use the Fluentd image of your choice
+        # Add Fluentd configuration here if needed
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1

@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: messaging-app
+  name: messaging-lb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: subnet-0c73d900ab9b2154b, subnet-01d5136ab403051ea, subnet-0312fda2d019fd285
+    alb.ingress.kubernetes.io/healthcheck-path: "/"
+    alb.ingress.kubernetes.io/healthcheck-port: "80"
+    alb.ingress.kubernetes.io/healthcheck-protocol: "HTTP"
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: messaging-service
+              port:
+                number: 80
