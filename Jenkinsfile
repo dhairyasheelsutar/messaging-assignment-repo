@@ -7,10 +7,16 @@ pipeline {
                 echo "Run tests here"
             }
         }
+
+        stage("Authenticate with ECR") {
+            steps {
+                echo "Authenticate with ECR"
+            }
+        }
         
         stage("Build Image") {
             steps {
-                sh "ls -alh"
+                sh "cd app && docker build -t webservice ."
             }
         }
 
