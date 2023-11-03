@@ -16,7 +16,7 @@ pipeline {
         
         stage("Build Image") {
             steps {
-                sh "cd app && docker build -t webservice ."
+                sh "cd app && sudo docker build -t webservice ."
             }
         }
 
