@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging-webservice
+  namespace: messaging-app
+  labels:
+    app: webservice
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webservice
+  template:
+    metadata:
+      labels:
+        app: webservice
+    spec:
+      serviceAccountName: messaging-service-account
+      containers:
+      - name: webservice
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      - name: fluentd
+        image: fluentd:latest
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: messaging-webservice-pdb
+spec:
+  maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: webservice
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: messaging-service
+  namespace: messaging-app
+spec:
+  selector:
+    app: app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: messaging-app
+  name: messaging-lb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: ${subnetIds}
+    alb.ingress.kubernetes.io/healthcheck-path: "/"
+    alb.ingress.kubernetes.io/healthcheck-port: "80"
+    alb.ingress.kubernetes.io/healthcheck-protocol: "HTTP"
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+        - path: /*
+          pathType: Prefix
+          backend:
+            service:
+              name: messaging-service
+              port:
+                number: 80
