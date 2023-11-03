@@ -4,13 +4,13 @@ pipeline {
     stages {
         stage("Running Tests") {
             steps {
-                echo "This is Stage 1"
+                echo "Run tests here"
             }
         }
         
         stage("Build Image") {
             steps {
-                echo "This is Stage 2"
+                ls -alh
             }
         }
 
