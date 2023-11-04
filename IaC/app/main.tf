@@ -79,7 +79,7 @@ resource "kubernetes_deployment" "messaging_webservice" {
 
       rolling_update {
         max_unavailable = "0"
-        max_surge       = "1" 
+        max_surge       = "3" 
       }
     }
   }

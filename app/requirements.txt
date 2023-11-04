@@ -1,2 +1,3 @@
 fastapi==0.104.1
 SQLAlchemy==1.4.50
+uvicorn[standard]

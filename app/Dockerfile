@@ -26,4 +26,4 @@ EXPOSE 8080
 USER $APP_USER
 
 # Run the FastAPI application
-CMD ["uvicorn", "main:main", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
