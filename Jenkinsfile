@@ -36,7 +36,7 @@ pipeline {
                 script {
                     sh 'cd IaC/app && terraform init'
                     sh 'cd IaC/app && terraform validate'
-                    sh 'cd IaC/app && terraform apply -auto-approve'
+                    sh 'cd IaC/app && terraform apply -var "app_image=${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:${GIT_COMMIT}" -auto-approve'
                 }
             }
         }

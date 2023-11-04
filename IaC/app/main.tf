@@ -40,7 +40,7 @@ resource "kubernetes_deployment" "messaging_webservice" {
 
         container {
           name  = "webservice"
-          image = "nginx:latest"
+          image = var.app_image
 
           port {
             container_port = 80

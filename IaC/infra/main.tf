@@ -20,6 +20,22 @@ module "vpc" {
   }
 }
 
+# Provision IAM Role for Jenkins VM
+
+# module "jenkins-role" {
+#   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
+#   create_role = true
+#   create_instance_profile = true
+#   role_name         = "JenkinsDeploymentRole"
+#   custom_role_policy_arns = [
+#     "arn:aws:iam::986773572400:policy/AccessEKSResources",
+#     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
+#     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+#     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+#   ]
+  
+# }
+
 # Provision EKS cluster
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -50,6 +66,21 @@ module "eks" {
   eks_managed_node_group_defaults = {
     instance_types = ["t3.medium"]
   }
+
+  manage_aws_auth_configmap = true
+
+  aws_auth_roles = [
+    # {
+    #   rolearn  = module.jenkins-role.iam_role_arn
+    #   username = "JenkinsDeploymentRole"
+    #   groups   = ["system:masters"]
+    # },
+    {
+      rolearn  = "arn:aws:iam::986773572400:role/EC2SSMRole"
+      username = "EC2SSMRole"
+      groups   = ["system:masters"]
+    }
+  ]
 
   eks_managed_node_groups = {
     default_pool = {
