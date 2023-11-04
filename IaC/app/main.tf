@@ -68,7 +68,7 @@ resource "kubernetes_stateful_set" "mysql-deployment" {
 
   spec {
     replicas = 1
-
+    service_name = "messaging-db-service"
     selector {
       match_labels = {
         app = "mysql" 
@@ -148,7 +148,7 @@ resource "kubernetes_stateful_set" "mysql-deployment" {
         access_modes = ["ReadWriteOnce"]
         
         resources {
-          requests {
+          requests = {
             storage = "30Gi"
           }  
         }
