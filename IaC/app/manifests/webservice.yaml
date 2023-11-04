@@ -16,35 +16,64 @@ spec:
         app: webservice
     spec:
       serviceAccountName: messaging-service-account
+      volumes:
+      - name: app-logs
+        emptyDir: {}
       containers:
       - name: webservice
-        image: nginx:latest
+        image: 986773572400.dkr.ecr.us-east-1.amazonaws.com/ecr-registry:7d4dea41712b609be5be22ffe3ee5fa829bcb4b7
+        volumeMounts:
+          - mountPath: /var/log/webservice
+            name: app-logs
+        env:
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: messaging-app-db-secret
+                key: DB_PASSWORD
+
+          - name: DB_HOST
+            value: messaging-db-service.messaging-app.svc.cluster.local
+
+          - name: DB_USER
+            value: testuser
+
+          - name: DB_NAME
+            value: db
+
+          - name: DB_PORT
+            value: "3306"
+
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         readinessProbe:
           httpGet:
             path: /
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 5
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /
-            port: 80
-          initialDelaySeconds: 10
-          periodSeconds: 5
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
       - name: fluentd
         image: fluentd:latest
+        volumeMounts:
+          - mountPath: /var/log/webservice
+            name: app-logs
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 0
-      maxSurge: 1
+      maxSurge: 3
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: messaging-webservice-pdb
+  namespace: messaging-app
 spec:
   maxUnavailable: 0
   selector:
@@ -62,7 +91,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 8080
   type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
@@ -73,7 +102,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/subnets: ${subnetIds}
+    alb.ingress.kubernetes.io/subnets: subnet-0a72821f83d26126b, subnet-05029911304404349, subnet-05965399e8e863ee5
     alb.ingress.kubernetes.io/healthcheck-path: "/"
     alb.ingress.kubernetes.io/healthcheck-port: "80"
     alb.ingress.kubernetes.io/healthcheck-protocol: "HTTP"
@@ -82,7 +111,7 @@ spec:
   rules:
     - http:
         paths:
-        - path: /*
+        - path: /
           pathType: Prefix
           backend:
             service:

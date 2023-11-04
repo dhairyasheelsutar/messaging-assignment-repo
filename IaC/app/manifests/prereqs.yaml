@@ -7,3 +7,4 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: messaging-service-account
+  namespace: messaging-app

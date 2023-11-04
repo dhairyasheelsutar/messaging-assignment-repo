@@ -18,6 +18,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the FastAPI application code into the container
 COPY . .
 
+# Setup log directory
+RUN mkdir -p /var/log/webservice
+RUN chown -R $APP_USER:$APP_USER /var/log/webservice
+
 # Change ownership of the application code to the non-root user
 RUN chown -R $APP_USER:$APP_USER $APP_HOME
 

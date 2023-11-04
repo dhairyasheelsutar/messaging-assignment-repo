@@ -103,6 +103,9 @@ module "eks" {
       max_size       = 10
       desired_size   = 1
       instance_types = ["t3.medium"]
+      iam_role_additional_policies = {
+        AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+      }
     }
   }
 

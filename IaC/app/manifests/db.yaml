@@ -5,11 +5,103 @@ metadata:
 provisioner: ebs.csi.aws.com
 volumeBindingMode: WaitForFirstConsumer
 parameters:
-  csi.storage.k8s.io/fstype: xfs
   type: gp3
-  encrypted: "true"
-allowedTopologies:
-- matchLabelExpressions:
-  - key: topology.ebs.csi.aws.com/zone
-    values:
-    - us-east-2c
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: messaging-db-configmap
+  namespace: messaging-app
+data:
+  mysql.cnf: |
+    [mysqld]
+    bind-address = 0.0.0.0
+    mysqlx-bind-address	= 0.0.0.0    
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: messaging-app-db-secret
+  namespace: messaging-app
+data:
+  DB_PASSWORD: QWJjZDEyMzRmZ2Y=
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+ name: messaging-db
+ namespace: messaging-app
+spec:
+ selector:
+   matchLabels:
+     app: mysql
+ serviceName: messaging-db-service
+ replicas: 1
+ template:
+   metadata:
+     labels:
+       app: mysql
+   spec:
+     serviceAccountName: messaging-service-account
+     terminationGracePeriodSeconds: 60
+     volumes:
+      - name: mysql-conf
+        configMap:
+          name: messaging-db-configmap
+     containers:
+     - name: mysql
+       image: mysql:8
+       ports:
+       - containerPort: 3306
+         name: mysql
+       env:
+        
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: messaging-app-db-secret
+              key: DB_PASSWORD
+
+        - name: MYSQL_HOST
+          value: 0.0.0.0
+        
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: messaging-app-db-secret
+              key: DB_PASSWORD
+
+        - name: MYSQL_DATABASE
+          value: db
+
+        - name: MYSQL_USER
+          value: testuser
+
+       volumeMounts:
+       - mountPath: /var/lib/mysql
+         name: data
+       - mountPath: /etc/mysql/conf.d
+         name: mysql-conf
+ volumeClaimTemplates:
+ - metadata:
+     name: data
+   spec:
+     storageClassName: ebs-sc
+     accessModes: [ "ReadWriteOnce" ]
+     resources:
+       requests:
+         storage: 30Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: messaging-db-service
+  namespace: messaging-app
+spec:
+  clusterIP: None
+  selector:
+    app: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
