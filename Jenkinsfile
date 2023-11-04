@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        REGION = 'us-east-1'
+    }
+
     stages {
         stage("Running Tests") {
             steps {
@@ -10,19 +14,19 @@ pipeline {
 
         stage("Authenticate with ECR") {
             steps {
-                echo "Authenticate with ECR"
+                scripts {
+                    sh 'aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin 986773572400.dkr.ecr.${REGION}.amazonaws.com'
+                }
             }
         }
         
-        stage("Build Image") {
+        stage("Build & Image") {
             steps {
-                sh "cd app && sudo docker build -t webservice ."
-            }
-        }
-
-        stage("Push Image") {
-            steps {
-                echo "This is Stage 3"
+                scripts {
+                    sh 'cd app && docker build -t ecr-registry .'
+                    sh 'docker tag ecr-registry:latest 986773572400.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:latest'
+                    sh 'docker push 986773572400.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:latest'
+                }
             }
         }
 

@@ -9,6 +9,7 @@ yum upgrade
 yum install -y yum-utils
 yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
 yum install git -y
+yum install python3 -y
 yum -y install terraform
 yum install java-11-amazon-corretto-headless -y
 yum install jenkins -y
@@ -17,6 +18,7 @@ systemctl enable jenkins
 
 # Install Docker
 yum install docker -y
+usermod -a -G docker jenkins
 usermod -a -G docker ec2-user
 systemctl start docker
 systemctl enable docker

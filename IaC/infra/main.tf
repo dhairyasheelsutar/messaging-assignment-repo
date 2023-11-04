@@ -136,4 +136,10 @@ resource "helm_release" "alb-controller" {
 
 }
 
-
+resource "aws_ecr_repository" "registry" {
+  name                 = "ecr-registry"
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+}
