@@ -14,7 +14,7 @@ pipeline {
 
         stage("Authenticate with ECR") {
             steps {
-                scripts {
+                script {
                     sh 'aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin 986773572400.dkr.ecr.${REGION}.amazonaws.com'
                 }
             }
@@ -22,7 +22,7 @@ pipeline {
         
         stage("Build & Image") {
             steps {
-                scripts {
+                script {
                     sh 'cd app && docker build -t ecr-registry .'
                     sh 'docker tag ecr-registry:latest 986773572400.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:latest'
                     sh 'docker push 986773572400.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:latest'
