@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         REGION = 'us-east-1'
+        ACCOUNT = '986773572400'
     }
 
     stages {
@@ -23,10 +24,9 @@ pipeline {
         stage("Build & Image") {
             steps {
                 script {
-                    sh 'Commit ID: ${GIT_COMMIT}'
                     sh 'cd app && docker build -t ecr-registry .'
-                    sh 'docker tag ecr-registry:latest 986773572400.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:latest'
-                    sh 'docker push 986773572400.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:latest'
+                    sh 'docker tag ecr-registry:latest ${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:${GIT_COMMIT}'
+                    sh 'docker push ${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:${GIT_COMMIT}'
                 }
             }
         }
