@@ -34,9 +34,8 @@ pipeline {
         stage("Deploy Application") {
             steps {
                 script {
-                    sh 'cd IaC/app'
-                    sh 'terraform init'
-                    sh 'terraform plan'
+                    sh 'cd IaC/app && terraform init'
+                    sh 'cd IaC/app && terraform plan'
                 }
             }
         }
