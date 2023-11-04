@@ -23,6 +23,7 @@ pipeline {
         stage("Build & Image") {
             steps {
                 script {
+                    sh 'Commit ID: ${env.GIT_COMMIT}'
                     sh 'cd app && docker build -t ecr-registry .'
                     sh 'docker tag ecr-registry:latest 986773572400.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:latest'
                     sh 'docker push 986773572400.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:latest'
@@ -32,7 +33,11 @@ pipeline {
 
         stage("Deploy Application") {
             steps {
-                echo "This is Stage 4"
+                script {
+                    sh 'cd IaC/app'
+                    sh 'terraform init'
+                    sh 'terraform plan'
+                }
             }
         }
     }
