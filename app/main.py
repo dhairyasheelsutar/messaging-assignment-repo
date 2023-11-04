@@ -1,8 +1,13 @@
 from typing import Union
 from fastapi import FastAPI
 
-app = FastAPI()
+from db.session import engine
+from db.base import Base
+from api.v1.routers import messages, health
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+Base.metadata.create_all(bind=engine)
+
+
+app = FastAPI()
+app.include_router(health.router)
+app.include_router(messages.router, prefix="/v1")

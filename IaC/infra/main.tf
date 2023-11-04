@@ -47,6 +47,9 @@ module "eks" {
   cluster_endpoint_public_access = true
 
   cluster_addons = {
+    aws-ebs-csi-driver = {
+      most_recent = true
+    }
     coredns = {
       most_recent = true
     }
@@ -65,6 +68,18 @@ module "eks" {
   # EKS Managed Node Group(s)
   eks_managed_node_group_defaults = {
     instance_types = ["t3.medium"]
+  }
+
+  cluster_security_group_additional_rules = {
+    inress_jenkins_tcp = {
+      description                = "Access EKS from Jenkins instance."
+      protocol                   = "tcp"
+      from_port                  = 443
+      to_port                    = 443
+      type                       = "ingress"
+      source_security_group_id  = "sg-0854f3c51e7bc72bb"
+      source_cluster_security_group = true
+    }
   }
 
   manage_aws_auth_configmap = true
