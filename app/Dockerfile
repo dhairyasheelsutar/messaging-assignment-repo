@@ -20,7 +20,7 @@ COPY . .
 RUN chown -R $APP_USER:$APP_USER $APP_HOME
 
 # Expose the port your FastAPI application will run on
-EXPOSE 8000
+EXPOSE 8080
 
 # Switch to the non-root user
 USER $APP_USER

@@ -43,13 +43,13 @@ resource "kubernetes_deployment" "messaging_webservice" {
           image = var.app_image
 
           port {
-            container_port = 80
+            container_port = 8080
           }
 
           readiness_probe {
             http_get {
               path = "/"
-              port = 80
+              port = 8080
             }
 
             initial_delay_seconds = 5
@@ -59,7 +59,7 @@ resource "kubernetes_deployment" "messaging_webservice" {
           liveness_probe {
             http_get {
               path = "/"
-              port = 80
+              port = 8080
             }
 
             initial_delay_seconds = 10
@@ -96,7 +96,7 @@ resource "kubernetes_service" "messaging_webservice_svc" {
     }
     port {
       port        = 80
-      target_port = 80
+      target_port = 8080
     }
 
     type = "ClusterIP"
