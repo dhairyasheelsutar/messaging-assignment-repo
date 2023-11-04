@@ -35,7 +35,8 @@ pipeline {
             steps {
                 script {
                     sh 'cd IaC/app && terraform init'
-                    sh 'cd IaC/app && terraform plan'
+                    sh 'cd IaC/app && terraform validate'
+                    sh 'cd IaC/app && terraform apply -auto-approve'
                 }
             }
         }
