@@ -41,16 +41,22 @@ def search_messages(message_id: str = None, sender_number: str = None, receiver_
     if message_id:
         logger.info("Receiving by message IDs")
         message_ids = message_id.split(",")
+        logger.info(f"Message ID: {message_ids}")
         query = query.filter(MessageDB.message_id.in_(message_ids))
 
     if sender_number:
         logger.info("Receiving by message ID")
         sender_numbers = sender_number.split(",")
+        logger.info(f"Sender: {sender_numbers}")
         query = query.filter(MessageDB.sender_number.in_(sender_numbers))
 
     if receiver_number:
         logger.info("Receiving by message ID")
         receiver_numbers = receiver_number.split(",")
+        logger.info(f"Receiver: {receiver_numbers}")
         query = query.filter(MessageDB.receiver_number.in_(receiver_numbers))
 
-    return query.all()
+    logger.info(query)
+    results = query.all()
+    logger.info(results)
+    return results
