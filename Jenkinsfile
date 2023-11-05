@@ -8,19 +8,7 @@ pipeline {
     }
 
     stages {
-        stage("Running Tests") {
-            agent {
-                docker {
-                    image 'python:3.9'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh 'ls'
-                sh 'sudo apt-get update && sudo apt-get install -y default-libmysqlclient-dev pkg-config'
-            }
-        }
-
+        
         stage("Authenticate with ECR") {
             steps {
                 script {
