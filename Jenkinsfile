@@ -9,8 +9,15 @@ pipeline {
 
     stages {
         stage("Running Tests") {
+            agent {
+                docker {
+                    image 'python:3.9'
+                    reuseNode true
+                }
+            }
             steps {
-                echo "Run tests here"
+                sh 'ls'
+                sh 'sudo apt-get update && sudo apt-get install -y default-libmysqlclient-dev pkg-config'
             }
         }
 
