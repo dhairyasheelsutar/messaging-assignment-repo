@@ -33,7 +33,7 @@ mv /tmp/eksctl /usr/local/bin
 
 # Install Kubectl
 
-curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.28.2/2023-10-17/bin/linux/amd64/kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.23.6/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 mv kubectl /usr/local/bin/
 

@@ -36,7 +36,11 @@ pipeline {
             steps {
                 script {
                     sh 'aws eks update-kubeconfig --region ${REGION} --name ${CLUSTER_NAME}'
-                    sh '/usr/local/bin/kubectl get pods -n messaging-app'
+                    sh '''
+                    sed 's|\\${image}|${image}|${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:${GIT_COMMIT}|' k8s/deployment.yaml > deploy.yaml
+                    '''
+                    sh 'ls'
+                    sh '/usr/local/bin/kubectl apply -f deploy.yaml'
                 }
             }
         }
