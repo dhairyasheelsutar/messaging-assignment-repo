@@ -107,17 +107,19 @@ module "jenkins_iam_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
 
   trusted_role_services = ["ec2.amazonaws.com"]
-
+  role_requires_mfa = false
   create_role = true
   create_instance_profile = true
   role_name = "jenkins-role"
-
+  trusted_role_actions = ["sts:AssumeRole"]
   custom_role_policy_arns = [
     aws_iam_policy.jenkins_eks_access_policy.arn,
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
   ]
   number_of_custom_role_policy_arns = 3
+
+  tags = local.tags
 
 }
 

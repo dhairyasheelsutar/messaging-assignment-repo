@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     sh 'aws eks update-kubeconfig --region ${REGION} --name ${CLUSTER_NAME}'
-                    sh 'kubectl get pods -n messaging-app'
+                    sh '/usr/local/bin/kubectl get pods -n messaging-app'
                 }
             }
         }
