@@ -27,7 +27,6 @@ The directory structure of the project is as follows:
   - /core
     - config.py
     - logger.py
-- /tests
   - test_main.py
 
 Now, let's dive into each aspect of the project.
@@ -63,7 +62,7 @@ This logging setup helps in recording application activities and errors, making 
 
 ## 4. Test Cases
 
-Test cases are defined in the `tests/test_main.py` file using the `pytest` framework. The tests make HTTP requests to the FastAPI application and assert the expected behavior. Here are the key test cases:
+Test cases are defined in the `test_main.py` file using the `pytest` framework. The tests make HTTP requests to the FastAPI application and assert the expected behavior. Here are the key test cases:
 
 - `test_create_message`: Sends a POST request to the `/v1/create` endpoint to create a message and verifies the response.
 - `test_get_messages`: Sends a GET request to the `/v1/get/messages/{account_id}` endpoint to retrieve messages for a specific account.
