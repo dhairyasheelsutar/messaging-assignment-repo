@@ -9,47 +9,40 @@ pipeline {
 
     stages {
         stage("Running Tests") {
-            agent {
-                docker {
-                    image 'python:3.9'
-                    reuseNode true
-                }
-            }
             steps {
-                sh 'ls'
-                sh 'sudo apt-get update && sudo apt-get install -y default-libmysqlclient-dev pkg-config'
+                echo "Run tests here"
             }
         }
 
-        // stage("Authenticate with ECR") {
-        //     steps {
-        //         script {
-        //             sh 'aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin 986773572400.dkr.ecr.${REGION}.amazonaws.com'
-        //         }
-        //     }
-        // }
+        stage("Authenticate with ECR") {
+            steps {
+                script {
+                    sh 'aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin 986773572400.dkr.ecr.${REGION}.amazonaws.com'
+                }
+            }
+        }
         
-        // stage("Build & Image") {
-        //     steps {
-        //         script {
-        //             sh 'cd app && docker build -t ecr-registry .'
-        //             sh 'docker tag ecr-registry:latest ${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:${GIT_COMMIT}'
-        //             sh 'docker push ${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:${GIT_COMMIT}'
-        //         }
-        //     }
-        // }
+        stage("Build & Image") {
+            steps {
+                script {
+                    sh 'cd app && docker build -t ecr-registry .'
+                    sh 'docker tag ecr-registry:latest ${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:${GIT_COMMIT}'
+                    sh 'docker push ${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:${GIT_COMMIT}'
+                }
+            }
+        }
 
-        // stage("Deploy Application") {
-        //     steps {
-        //         script {
-        //             sh 'aws eks update-kubeconfig --region ${REGION} --name ${CLUSTER_NAME}'
-        //             sh '''
-        //                 sed "s|\\\${image}|${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:${GIT_COMMIT}|" k8s/deployment.yaml > deploy.yaml
-        //             '''
-        //             sh 'ls'
-        //             sh '/usr/local/bin/kubectl apply -f deploy.yaml'
-        //         }
-        //     }
-        // }
+        stage("Deploy Application") {
+            steps {
+                script {
+                    sh 'aws eks update-kubeconfig --region ${REGION} --name ${CLUSTER_NAME}'
+                    sh '''
+                        sed "s|\\\${image}|${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:${GIT_COMMIT}|" k8s/deployment.yaml > deploy.yaml
+                    '''
+                    sh 'ls'
+                    sh '/usr/local/bin/kubectl apply -f deploy.yaml'
+                }
+            }
+        }
     }
 }
