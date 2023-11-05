@@ -1,0 +1,9 @@
+groups:
+  - name: WebserviceStatus 
+    rules:
+      - alert: WebserviceOnlineStatus
+        expr: kube_deployment_status_condition{namespace="messaging-app"} < 1
+        labels:
+          severity: critical
+        annotations:
+          summary: "Webservice is offline"

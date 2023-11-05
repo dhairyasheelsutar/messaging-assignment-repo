@@ -333,41 +333,13 @@ resource "helm_release" "amp_prometheus" {
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "prometheus"
   namespace  = kubernetes_namespace.prometheus_namespace.metadata[0].name
-
-  set {
-    name  = "serviceAccounts.server.name"
-    value = "amp-iamproxy-ingest-service-account" 
-  }
-
-  set {
-    name  = "serviceAccounts.server.annotations.eks\\.amazonaws\\.com/role-arn" 
-    value = module.amp_sa_role.iam_role_arn
-  }
-
-  set {
-    name  = "server.remoteWrite[0].url"
-    value = "https://aps-workspaces.us-east-1.amazonaws.com/workspaces/${aws_prometheus_workspace.amp_workspace.id}/api/v1/remote_write"
-  }
-
-  set {
-    name  = "server.remoteWrite[0].sigv4.region"
-    value = var.region
-  }
-
-  set {  
-    name  = "server.remoteWrite[0].queue_config.max_samples_per_send"
-    value = "1000"
-  }
-
-  set {
-    name  = "server.remoteWrite[0].queue_config.max_shards"
-    value = "200"
-  }
-
-  set {
-    name  = "server.remoteWrite[0].queue_config.capacity" 
-    value = "2500"
-  }
+  
+  values = [templatefile("../k8s/prometheus.values.yaml", {
+    sa_name = "amp-iamproxy-ingest-service-account",
+    role_arn = module.amp_sa_role.iam_role_arn,
+    url = "https://aps-workspaces.us-east-1.amazonaws.com/workspaces/${aws_prometheus_workspace.amp_workspace.id}/api/v1/remote_write",
+    region = var.region
+  })]
 
 }
 
@@ -401,6 +373,18 @@ resource "kubernetes_manifest" "dbsecret" {
 # 4. Configmap for Webservice
 resource "kubernetes_manifest" "configmap" {
   manifest = yamldecode(file("../k8s/configmap.yaml"))
+  depends_on = [kubernetes_manifest.namespace]
+}
+
+# 5. Configmap for PDB
+resource "kubernetes_manifest" "pdb" {
+  manifest = yamldecode(file("../k8s/pdb.yaml"))
+  depends_on = [kubernetes_manifest.namespace]
+}
+
+# 6. Configmap for Network Policy
+resource "kubernetes_manifest" "networkpolicy" {
+  manifest = yamldecode(file("../k8s/np.yaml"))
   depends_on = [kubernetes_manifest.namespace]
 }
 
@@ -447,6 +431,13 @@ resource "kubernetes_manifest" "deployment" {
 # 2. Deploy Service
 resource "kubernetes_manifest" "webservice" {
   manifest = yamldecode(file("../k8s/webservice.yaml"))
+  depends_on = [
+    kubernetes_manifest.deployment
+  ]
+}
+
+resource "kubernetes_manifest" "hpa" {
+  manifest = yamldecode(file("../k8s/hpa.yaml"))
   depends_on = [
     kubernetes_manifest.deployment
   ]

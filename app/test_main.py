@@ -1,6 +1,7 @@
 import requests
 import string
 import random
+import time
 import pytest
 
 
@@ -38,6 +39,7 @@ def test_create_message():
     assert data["account_id"] == sample_message["account_id"]
     assert data["sender_number"] == sample_message["sender_number"]
     assert data["receiver_number"] == sample_message["receiver_number"]
+    time.sleep(10)
 
 # Test cases for the /get/messages/{account_id} endpoint
 
