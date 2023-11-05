@@ -314,6 +314,7 @@ resource "kubernetes_namespace" "prometheus_namespace" {
 module "amp_sa_role" {
   source                                 = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   role_name                              = "amp-sa-role"
+  attach_amazon_managed_service_prometheus_policy = true
   oidc_providers = {
     main = {
       provider_arn               = module.eks.oidc_provider_arn
