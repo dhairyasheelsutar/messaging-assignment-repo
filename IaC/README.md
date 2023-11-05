@@ -1,10 +1,86 @@
 # Terraform Deployment README
 
-
 ## Overview
 
 This README provides a detailed explanation of the Terraform deployment for a messaging assignment repository. It explains what resources are being deployed, their purpose, how to execute the Terraform scripts, and how they follow best practices.
 
+## Resources
+
+### Requirements
+
+No requirements.
+
+### Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.24.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.11.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.23.0 |
+
+### Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_amp_sa_role"></a> [amp\_sa\_role](#module\_amp\_sa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | n/a |
+| <a name="module_app_sa_role"></a> [app\_sa\_role](#module\_app\_sa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | n/a |
+| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 19.0 |
+| <a name="module_jenkins_iam_role"></a> [jenkins\_iam\_role](#module\_jenkins\_iam\_role) | terraform-aws-modules/iam/aws//modules/iam-assumable-role | n/a |
+| <a name="module_jenkins_sg"></a> [jenkins\_sg](#module\_jenkins\_sg) | terraform-aws-modules/security-group/aws | n/a |
+| <a name="module_jenkins_vm"></a> [jenkins\_vm](#module\_jenkins\_vm) | terraform-aws-modules/ec2-instance/aws | n/a |
+| <a name="module_lb_role"></a> [lb\_role](#module\_lb\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | n/a |
+| <a name="module_lb_service_account"></a> [lb\_service\_account](#module\_lb\_service\_account) | ./modules/service-account | n/a |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | n/a |
+
+### Resources
+
+| Name | Type |
+|------|------|
+| [aws_ecr_repository.registry](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository) | resource |
+| [aws_iam_policy.jenkins_eks_access_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_prometheus_workspace.amp_workspace](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/prometheus_workspace) | resource |
+| [helm_release.amp_prometheus](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.lb_controller](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [kubernetes_manifest.configmap](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.dbsecret](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.dbservice](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.deployment](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.hpa](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.ingress](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.namespace](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.networkpolicy](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.pdb](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.sc](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.service_account](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.statefulset](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_manifest.webservice](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
+| [kubernetes_namespace.prometheus_namespace](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
+| [aws_ami.ami](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
+| [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
+
+### Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_region"></a> [region](#input\_region) | AWS Region | `string` | n/a | yes |
+
+### Outputs
+
+No outputs.
+
+---
+
+## Code Execution
+
+Before running the code, make sure to change the S3 Bucket configuration in the `provider.tf` to your bucket.
+
+You can follow the below commands for running the code:
+
+```bash
+terraform init
+terraform plan
+terraform apply
+```
 
 ## Table of Contents
 
@@ -204,3 +280,4 @@ This section of the script deploys a set of resources to a Kubernetes cluster, i
 * Service for the web service
 * Horizontal Pod Autoscaler (HPA)
 * Ingress for routing external traffic
+
