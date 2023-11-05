@@ -4,6 +4,7 @@ pipeline {
     environment {
         REGION = 'us-east-1'
         ACCOUNT = '986773572400'
+        CLUSTER_NAME = 'eks-cluster'
     }
 
     stages {
@@ -31,14 +32,13 @@ pipeline {
             }
         }
 
-        // stage("Deploy Application") {
-        //     steps {
-        //         script {
-        //             sh 'cd IaC/app && terraform init'
-        //             sh 'cd IaC/app && terraform validate'
-        //             sh 'cd IaC/app && terraform apply -var "app_image=${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/ecr-registry:${GIT_COMMIT}" -auto-approve'
-        //         }
-        //     }
-        // }
+        stage("Deploy Application") {
+            steps {
+                script {
+                    sh 'aws eks update-kubeconfig --region ${REGION} --name ${CLUSTER_NAME}'
+                    sh 'kubectl get pods -n messaging-app'
+                }
+            }
+        }
     }
 }
