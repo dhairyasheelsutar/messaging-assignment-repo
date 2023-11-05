@@ -24,6 +24,7 @@ file.setLevel(logging.DEBUG)
 formatter = logging.Formatter(
     "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 ch.setFormatter(formatter)
+file.setFormatter(formatter)
 
 # Add the handler to the logger
 logger.addHandler(ch)

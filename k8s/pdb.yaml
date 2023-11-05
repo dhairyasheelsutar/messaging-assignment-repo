@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: messaging-webservice-pdb
+  namespace: messaging-app
+spec:
+  maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: webservice

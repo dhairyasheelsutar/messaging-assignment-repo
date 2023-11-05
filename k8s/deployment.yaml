@@ -19,9 +19,12 @@ spec:
       volumes:
       - name: app-logs
         emptyDir: {}
+      - name: fluentd-config
+        configMap:
+          name: messaging-fluentd-configmap
       containers:
       - name: webservice
-        image: 986773572400.dkr.ecr.us-east-1.amazonaws.com/ecr-registry:7d4dea41712b609be5be22ffe3ee5fa829bcb4b7
+        image: ${image}
         volumeMounts:
           - mountPath: /var/log/webservice
             name: app-logs
@@ -59,62 +62,14 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
       - name: fluentd
-        image: fluentd:latest
+        image: fluent/fluent-bit
         volumeMounts:
           - mountPath: /var/log/webservice
             name: app-logs
+          - mountPath: /fluent-bit/etc 
+            name: fluentd-config
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 3
----
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
-  name: messaging-webservice-pdb
-  namespace: messaging-app
-spec:
-  maxUnavailable: 0
-  selector:
-    matchLabels:
-      app: webservice
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: messaging-service
-  namespace: messaging-app
-spec:
-  selector:
-    app: app
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-  type: ClusterIP
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  namespace: messaging-app
-  name: messaging-lb
-  annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/subnets: subnet-0a72821f83d26126b, subnet-05029911304404349, subnet-05965399e8e863ee5
-    alb.ingress.kubernetes.io/healthcheck-path: "/"
-    alb.ingress.kubernetes.io/healthcheck-port: "80"
-    alb.ingress.kubernetes.io/healthcheck-protocol: "HTTP"
-spec:
-  ingressClassName: alb
-  rules:
-    - http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: messaging-service
-              port:
-                number: 80
