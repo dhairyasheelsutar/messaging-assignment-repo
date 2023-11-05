@@ -207,6 +207,15 @@ module "eks" {
         AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
       }
     }
+    new_pool = {
+      min_size       = 2
+      max_size       = 10
+      desired_size   = 2
+      instance_types = ["t3.medium"]
+      iam_role_additional_policies = {
+        AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+      }
+    }
   }
 
   tags = local.tags

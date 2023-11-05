@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: messaging-webservice
   namespace: messaging-app
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
   labels:
     app: webservice
 spec:

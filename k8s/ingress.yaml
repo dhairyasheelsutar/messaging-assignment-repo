@@ -8,7 +8,7 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/subnets: ${subnetIps}
     alb.ingress.kubernetes.io/healthcheck-path: "/"
-    alb.ingress.kubernetes.io/healthcheck-port: "80"
+    alb.ingress.kubernetes.io/healthcheck-port: "8080"
     alb.ingress.kubernetes.io/healthcheck-protocol: "HTTP"
 spec:
   ingressClassName: alb
@@ -21,4 +21,4 @@ spec:
             service:
               name: messaging-service
               port:
-                number: 80
+                number: 8080
