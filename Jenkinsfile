@@ -17,7 +17,7 @@ pipeline {
             }
         }
         
-        stage("Build & Image") {
+        stage("Build & Push Image") {
             steps {
                 script {
                     sh 'cd app && docker build -t ecr-registry .'
