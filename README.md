@@ -49,8 +49,6 @@ Also, FastAPI generates the API Documentation for us.
 
 The source code for the messaging service is present in the `app` directory. The tests are written in the `app/test_main.py` file.
 
--- Tests output
-
 The messaging service is deployed in the EKS cluster as `kubernetes deployment` and it is exposed internally using the `ClusterIP` service. Then the service is exposed using the `Ingress` controller. 
 
 Since we have installed `AWS Load Balancer Controller` in the EKS cluster, the ingress resource provisions to `Application Load Balancer` and forwards the traffic to the target group. The pods are registered as IP targets in the target group.
