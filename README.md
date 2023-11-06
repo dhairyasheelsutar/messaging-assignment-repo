@@ -18,6 +18,9 @@ The service will have the following features:
 
 ## Architechture
 
+Here is the architechture diagram to implmenent the points mentioned in the Objective section:
+
+![Architechture Diagram](https://github.com/dhairyasheelsutar/messaging-assignment-repo/blob/main/images/architechture.png)
 
 
 ### Overview
