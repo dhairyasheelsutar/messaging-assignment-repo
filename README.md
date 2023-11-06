@@ -61,15 +61,15 @@ Since we have installed `AWS Load Balancer Controller` in the EKS cluster, the i
 
 The database used is MySQL for storing the message data. The message schema is as follows:
 
-+-----------------+--------------+------+-----+---------+----------------+
-| Field           | Type         | Null | Key | Default | Extra          |
-+-----------------+--------------+------+-----+---------+----------------+
-| id              | int          | NO   | PRI | NULL    | auto_increment |
-| message_id      | varchar(255) | YES  | UNI | NULL    |                |
-| account_id      | int          | YES  | MUL | NULL    |                |
-| sender_number   | varchar(255) | YES  | MUL | NULL    |                |
-| receiver_number | varchar(255) | YES  | MUL | NULL    |                |
-+-----------------+--------------+------+-----+---------+----------------+
++-----------------+--------------+------+-----+---------+----------------+<br />
+| Field           | Type         | Null | Key | Default | Extra          |<br />
++-----------------+--------------+------+-----+---------+----------------+<br />
+| id              | int          | NO   | PRI | NULL    | auto_increment |<br />
+| message_id      | varchar(255) | YES  | UNI | NULL    |                |<br />
+| account_id      | int          | YES  | MUL | NULL    |                |<br />
+| sender_number   | varchar(255) | YES  | MUL | NULL    |                |<br />
+| receiver_number | varchar(255) | YES  | MUL | NULL    |                |<br />
++-----------------+--------------+------+-----+---------+----------------+<br />
 
 The database is deployed as a `Statefulset` in the EKS cluster. 
 
