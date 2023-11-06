@@ -1,6 +1,6 @@
 # Kubernetes YAML Spec Files
 
-This README provides a comprehensive overview of the Kubernetes YAML files in the given directory `/home/dhairyasheel/Projects/messaging-assignment-repo/k8s`. It describes what each file contains, their purpose, and how they contribute to the deployment of a messaging application.
+This README provides a comprehensive overview of the Kubernetes YAML files in the directory `k8s`. It describes what each file contains, their purpose, and how they contribute to the deployment of a messaging application.
 
 ## Deployment Steps
 

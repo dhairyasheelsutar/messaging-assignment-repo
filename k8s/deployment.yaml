@@ -28,6 +28,13 @@ spec:
       containers:
       - name: webservice
         image: ${image}
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
         volumeMounts:
           - mountPath: /var/log/webservice
             name: app-logs
@@ -66,6 +73,13 @@ spec:
           periodSeconds: 10
       - name: fluentd
         image: fluent/fluent-bit
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
         volumeMounts:
           - mountPath: /var/log/webservice
             name: app-logs
