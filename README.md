@@ -45,7 +45,7 @@ We can simply provide the request schema, response schema in the router and Fast
 
 Also, FastAPI generates the API Documentation for us.
 
--- Add image of Fast API
+![Fast API](https://github.com/dhairyasheelsutar/messaging-assignment-repo/blob/main/images/fast-api.png)
 
 The source code for the messaging service is present in the `app` directory. The tests are written in the `app/test_main.py` file.
 
@@ -135,7 +135,7 @@ b. Build & Push Image: This stage builds a Docker image for an application locat
 
 c. Deploy Application: In this stage, the pipeline replaces the ${image} pattern present in the deployment.yaml and applies it to the EKS Cluster.
 
--- Add image of Jenkins build
+![jenkins](https://github.com/dhairyasheelsutar/messaging-assignment-repo/blob/main/images/jenkins-build.png)
 
 ### Logging & Monitoring
 
@@ -145,7 +145,7 @@ In addition to the webservice container, there is a `fluent-bit` container runni
 
 Both `fluent-bit` container and `webservice` are mounted on the same location where webservice writes the logs. The `fluent-bit` configs are passed using the configmap.
 
--- Add image for Logging
+![cloudwatch](https://github.com/dhairyasheelsutar/messaging-assignment-repo/blob/main/images/cloudwatch.png)
 
 #### Monitoring
 
@@ -157,7 +157,7 @@ This metric essentially monitors whether the service is running or not.
 
 Here is how it is visualized using the Graphana
 
--- Add Image of Graphana
+![graphana-monitoring](https://github.com/dhairyasheelsutar/messaging-assignment-repo/blob/main/images/graphana-prometheus.png)
 
 ## Deployment Steps
 
