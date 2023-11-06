@@ -16,16 +16,16 @@ The service will have the following features:
 - Setup firewall rules and networking.
 - Build a CI/CD pipeline using Jenkins to automate deployments.
 
-## Architechture
+## Architecture
 
-Here is the architechture diagram to implmenent the points mentioned in the Objective section:
+Here is the architecture diagram to implement the points mentioned in the Objective section:
 
 ![Architechture Diagram](https://github.com/dhairyasheelsutar/messaging-assignment-repo/blob/main/images/architechture.png)
 
 
 ### Overview
 
-The entire architechture is deployed using the terraform scripts right from provisining the VPC to deploying webservice.
+The entire architecture is deployed using the terraform scripts right from provisioning the VPC to deploying webservice.
 
 It implements Infra provisioning, CI/CD Pipelines, Scaling and Observability for the HTTP API.
 
@@ -92,7 +92,7 @@ The kubernetes cluster is deployed using the EKS service.
 
 The application is deployed in the EKS in a separate namespace named `messaging-app`. Also, a new service account is provisioned for the workloads in the namespace to restrict the access.
 
-1. `Messaging Service` - The webservice is configured to the rolling strategy with max surge and pod disruption budget with unavailable pods set to 0. This allows the service to be available at the times. In addition to this, the service is configured Guarented QoS class by setting the resource requests and limits. The webservice pod has a sidecar container for collecting the logs and sending it to the cloudwatch. It is also configured with the HPA, which takes care scaling the deployment based on the CPU Utilization metric.
+1. `Messaging Service` - The webservice is configured to the rolling strategy with max surge and pod disruption budget with unavailable pods set to 0. This allows the service to be available at the times. In addition to this, the service is configured Guaranteed QoS class by setting the resource requests and limits. The webservice pod has a sidecar container for collecting the logs and sending it to the cloudwatch. It is also configured with the HPA, which takes care scaling the deployment based on the CPU Utilization metric.
 
 2. `MySQL DB` - The statefulset is configured with the dynamic provisioning with the help of storage class. The storage class helps in the provisioning the EBS volumes in the AWS. Then the MySQL pod can leverage the disk by accessing it using PVC.
 
